@@ -1,0 +1,944 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Sustentación oral del taller bloque microeconomía - Introducción a la economía</title>
+
+<style>
+
+/* =====================================================
+   RESET
+===================================================== */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, Helvetica, sans-serif;
+}
+
+body{
+    min-height:100vh;
+    background:linear-gradient(135deg,#0d0d0d,#320000,#5b0000);
+    color:white;
+    padding:20px;
+}
+
+/* =====================================================
+   TITULOS
+===================================================== */
+
+h1{
+    text-align:center;
+    font-size:2.6rem;
+    margin-bottom:10px;
+}
+
+.subtitle{
+    text-align:center;
+    color:#d8d8d8;
+    margin-bottom:30px;
+}
+
+/* =====================================================
+   LAYOUT
+===================================================== */
+
+.main-container{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:30px;
+}
+
+@media(max-width:1000px){
+
+    .main-container{
+        grid-template-columns:1fr;
+    }
+
+}
+
+/* =====================================================
+   TARJETAS
+===================================================== */
+
+.card{
+    background:rgba(255,255,255,0.06);
+    border:1px solid rgba(255,255,255,0.1);
+    border-radius:22px;
+    padding:25px;
+    backdrop-filter:blur(8px);
+    box-shadow:0 10px 30px rgba(0,0,0,0.35);
+}
+
+/* =====================================================
+   RULETAS
+===================================================== */
+
+.roulette-wrapper{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:20px;
+}
+
+.pointer{
+    width:0;
+    height:0;
+
+    border-left:18px solid transparent;
+    border-right:18px solid transparent;
+    border-top:35px solid white;
+
+    margin-bottom:-8px;
+    z-index:10;
+}
+
+canvas{
+    background:#111;
+    border-radius:50%;
+    box-shadow:0 0 25px rgba(255,255,255,0.08);
+}
+
+/* =====================================================
+   BOTONES
+===================================================== */
+
+.buttons{
+    display:flex;
+    justify-content:center;
+    flex-wrap:wrap;
+    gap:12px;
+    margin-top:15px;
+}
+
+button{
+    border:none;
+    border-radius:12px;
+    padding:12px 22px;
+    font-weight:bold;
+    cursor:pointer;
+    transition:0.3s;
+
+    background:#8b0000;
+    color:white;
+}
+
+button:hover{
+    background:#ba0000;
+    transform:translateY(-2px);
+}
+
+button:disabled{
+    background:#555;
+    cursor:not-allowed;
+}
+
+/* =====================================================
+   RESULTADOS
+===================================================== */
+
+.result-box{
+    width:100%;
+    margin-top:15px;
+    background:rgba(255,255,255,0.08);
+    border-radius:16px;
+    padding:20px;
+    text-align:center;
+}
+
+.result-title{
+    color:#ffdcdc;
+    margin-bottom:12px;
+    font-size:1.2rem;
+}
+
+.result-content{
+    font-size:2rem;
+    font-weight:bold;
+    line-height:1.4;
+    padding:15px;
+    word-break:break-word;
+    text-align:center;
+}
+
+#questionResult{
+    font-size:2.4rem;
+    color:white;
+    background:#8b0000;
+    border-radius:18px;
+    min-height:170px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    padding:30px;
+
+    box-shadow:0 0 20px rgba(255,255,255,0.15);
+}
+
+/* =====================================================
+   PANEL MANUAL
+===================================================== */
+
+.control-panel{
+    margin-top:25px;
+}
+
+.group-buttons{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+    margin-top:15px;
+}
+
+.remove-btn{
+    background:#1d1d1d;
+    border:1px solid #900;
+}
+
+.remove-btn:hover{
+    background:#5b0000;
+}
+
+/* =====================================================
+   HISTORIAL
+===================================================== */
+
+.history ul{
+    margin-top:15px;
+    padding-left:20px;
+}
+
+.history li{
+    margin-bottom:6px;
+}
+
+/* =====================================================
+   MENSAJES
+===================================================== */
+
+.message{
+    text-align:center;
+    margin-top:15px;
+    font-size:1.1rem;
+    color:#ffe0e0;
+    min-height:30px;
+}
+
+</style>
+</head>
+<body>
+
+<h1>Sustentación oral del taller bloque microeconomía</h1>
+
+<p class="subtitle">
+Introducción a la economía</p>
+
+<div class="main-container">
+
+    <!-- =====================================================
+         RULETA GRUPOS
+    ===================================================== -->
+
+    <div class="card">
+
+        <h2 style="text-align:center;margin-bottom:20px;">
+            Ruleta de Grupos
+        </h2>
+
+        <div class="roulette-wrapper">
+
+            <div class="pointer"></div>
+
+            <canvas id="groupWheel" width="450" height="450"></canvas>
+
+            <div class="buttons">
+
+                <button id="spinGroupsBtn">
+                    Girar ruleta de grupos
+                </button>
+
+            </div>
+
+            <div class="result-box">
+
+                <div class="result-title">
+                    Grupo seleccionado
+                </div>
+
+                <div class="result-content" id="groupResult">
+                    ---
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- PANEL MANUAL -->
+
+        <div class="control-panel">
+
+            <h3>
+                Eliminar grupos manualmente
+            </h3>
+
+            <div class="group-buttons" id="groupButtons"></div>
+
+        </div>
+
+    </div>
+
+    <!-- =====================================================
+         RULETA PREGUNTAS
+    ===================================================== -->
+
+    <div class="card">
+
+        <h2 style="text-align:center;margin-bottom:20px;">
+            Ruleta de Preguntas
+        </h2>
+
+        <div class="roulette-wrapper">
+
+            <div class="pointer"></div>
+
+            <canvas id="questionWheel" width="450" height="450"></canvas>
+
+            <div class="buttons">
+
+                <button id="spinQuestionsBtn" disabled>
+                    Girar ruleta de preguntas
+                </button>
+
+            </div>
+
+            <div class="result-box">
+
+                <div class="result-title">
+                    Pregunta seleccionada
+                </div>
+
+                <div class="result-content" id="questionResult">
+                    ---
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- =====================================================
+     CONTROLES
+===================================================== -->
+
+<div class="card" style="margin-top:30px;">
+
+    <div class="buttons">
+
+        <button id="startRoundBtn">
+            Iniciar ronda
+        </button>
+
+        <button id="resetBtn">
+            Reiniciar juego
+        </button>
+
+    </div>
+
+    <div class="message" id="messageBox"></div>
+
+</div>
+
+<!-- =====================================================
+     HISTORIAL
+===================================================== -->
+
+<div class="main-container" style="margin-top:30px;">
+
+    <div class="card history">
+
+        <h3>Grupos ya seleccionados</h3>
+
+        <ul id="usedGroupsList"></ul>
+
+    </div>
+
+    <div class="card history">
+
+        <h3>Preguntas ya utilizadas</h3>
+
+        <ul id="usedQuestionsList"></ul>
+
+    </div>
+
+</div>
+
+<script>
+
+/* =====================================================
+   DATOS EDITABLES
+===================================================== */
+
+/*
+    AQUÍ PUEDES CAMBIAR LAS PREGUNTAS
+*/
+
+let groups = [
+    "Grupo 1",
+    "Grupo 2",
+    "Grupo 3",
+    "Grupo 4",
+    "Grupo 5",
+    "Grupo 6",
+    "Grupo 7",
+    "Grupo 8",
+    "Grupo 9"
+];
+
+let questions = [
+    "En el taller trabajaron el modelo de mercado simple a partir de los supuestos planteados por Cuevas. Explique cuáles son esos supuestos, cómo interactúan entre sí y qué ocurre con el equilibrio del modelo si uno de ellos —específicamente la racionalidad maximizadora— no se cumple para los productores del bien y",
+    "En el componente de análisis del taller, construyeron una FPP con rendimientos decrecientes para el caso de la sociedad que debe elegir entre arroz y suplementos fitness, dado que el 80% del ingreso está concentrado en personas fitness. Explique qué determina dónde se ubica el punto de producción sobre esa FPP y por qué ese punto no estaría en el extremo del arroz. Justifique qué ocurre con el costo de oportunidad a medida que la sociedad produce más suplementos fitness.",
+    "En el taller encontraron la función de demanda del mercado de arroz a partir de dos puntos de la tabla. Explique el procedimiento que siguieron para hallarla, qué representa cada componente de esa función, y por qué la pendiente tiene signo negativo. Luego interprete qué significa económicamente ese valor de la pendiente que obtuvieron.",
+    "En el taller se les pidió analizar qué sucede cuando el precio del huevo aumenta, sobre la demanda del arroz. Explique si eso genera un movimiento a lo largo de la curva o un desplazamiento de ella, qué dirección toma ese cambio y cuál es el mecanismo económico que lo produce. ",
+    "En el taller calcularon la elasticidad precio de la demanda para cuatro periodos del mercado de arroz. Explique el procedimiento para calcularla usando la fórmula del arco, interprete uno de los resultados que obtuvieron, y explique qué implicaciones tiene ese valor sobre los ingresos de los productores. Relacione su respuesta con la paradoja de la buena cosecha.",
+    "En el taller encontraron la función de oferta del mercado de arroz. Explique por qué la pendiente de la función de oferta tiene signo positivo, qué ocurre gráficamente cuando hay una sequía en el mercado del arroz, y si ese cambio es un movimiento a lo largo de la curva o un desplazamiento. Relacione su explicación con los determinantes de la función total de oferta.",
+    "En el taller presentaron un ejemplo de elasticidad cruzada de la demanda entre dos bienes sustitutos o complementarios. Explique qué mide la elasticidad cruzada, cuál es el signo esperado para bienes sustitutos y para bienes complementarios, y cómo justifica ese signo el mecanismo económico que opera en cada caso. ",
+    "Con los datos del Mercado 1 (arroz) encontraron el equilibrio de mercado. Explique cuál es la condición que debe cumplirse para que exista equilibrio, qué ocurre si el precio se establece por encima del precio de equilibrio, y cuál es el mecanismo de mercado que lleva a corregir esa situación bajo condiciones de competencia perfecta.",
+    "En el taller analizaron qué ocurre cuando el gobierno fija un precio del arroz por debajo del precio de equilibrio de mercado. Explique cómo se llama ese instrumento, qué situación de desequilibrio genera, y qué implicaciones tiene sobre los ingresos de los productores considerando que la EPD del arroz es de 0,4 en valor absoluto. Justifique con el concepto de elasticidad.",
+    "En el taller compararon distintos tipos de elasticidad. Si un estudiante calcula la elasticidad precio de la oferta del arroz entre dos periodos de la tabla y obtiene un valor de 1,8, y otro estudiante obtiene 0,6 para la misma función entre otros dos periodos, ¿esto implica que hay un error en alguno de los cálculos? Explique por qué la elasticidad puede variar entre distintos puntos de una misma función y relacione esto con la fórmula arco utilizada.",
+    "En el taller analizaron el equilibrio del mercado de arroz en los diferentes plazos. Explique por qué el impacto de un aumento de la demanda sobre el precio es diferente en el corto, mediano y largo plazo, y cómo esta diferencia se refleja en la forma de la función de oferta en cada plazo. Use el mercado del arroz como referencia.",
+    "En el taller trabajaron con la función Q(P) = 135,6 − 2,4P y la función Q(P) = 18,7 + 3,2P para calcular el equilibrio de mercado. Explique a qué tipo de función económica corresponde cada una, cómo determinaron el equilibrio entre ellas. Finalmente, explique qué representa gráficamente el punto de equilibrio que obtuvieron."
+];
+
+/* =====================================================
+   VARIABLES
+===================================================== */
+
+let usedGroups = [];
+let usedQuestions = [];
+
+let currentGroup = null;
+let currentQuestion = null;
+
+let canSpinQuestions = false;
+
+/* =====================================================
+   ELEMENTOS DOM
+===================================================== */
+
+const groupCanvas = document.getElementById("groupWheel");
+const groupCtx = groupCanvas.getContext("2d");
+
+const questionCanvas = document.getElementById("questionWheel");
+const questionCtx = questionCanvas.getContext("2d");
+
+const spinGroupsBtn = document.getElementById("spinGroupsBtn");
+const spinQuestionsBtn = document.getElementById("spinQuestionsBtn");
+
+const groupResult = document.getElementById("groupResult");
+const questionResult = document.getElementById("questionResult");
+
+const usedGroupsList = document.getElementById("usedGroupsList");
+const usedQuestionsList = document.getElementById("usedQuestionsList");
+
+const messageBox = document.getElementById("messageBox");
+
+const groupButtonsContainer = document.getElementById("groupButtons");
+
+/* =====================================================
+   DIBUJAR RULETA
+===================================================== */
+
+function drawWheel(ctx, items, rotation = 0){
+
+    const canvas = ctx.canvas;
+
+    const centerX = canvas.width / 2;
+    const centerY = canvas.height / 2;
+
+    const radius = 200;
+
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+
+    if(items.length === 0){
+
+        ctx.beginPath();
+
+        ctx.arc(
+            centerX,
+            centerY,
+            radius,
+            0,
+            Math.PI * 2
+        );
+
+        ctx.fillStyle = "#444";
+        ctx.fill();
+
+        ctx.fillStyle = "white";
+        ctx.font = "20px Arial";
+        ctx.textAlign = "center";
+
+        ctx.fillText(
+            "Sin elementos",
+            centerX,
+            centerY
+        );
+
+        return;
+    }
+
+    const anglePerItem =
+        (Math.PI * 2) / items.length;
+
+    items.forEach((item,index)=>{
+
+        const startAngle =
+            rotation + (index * anglePerItem);
+
+        const endAngle =
+            startAngle + anglePerItem;
+
+        ctx.beginPath();
+
+        ctx.moveTo(centerX,centerY);
+
+        ctx.arc(
+            centerX,
+            centerY,
+            radius,
+            startAngle,
+            endAngle
+        );
+
+        ctx.closePath();
+
+        ctx.fillStyle =
+            index % 2 === 0
+            ? "#8b0000"
+            : "#2c2c2c";
+
+        ctx.fill();
+
+        ctx.save();
+
+        ctx.translate(centerX,centerY);
+
+        ctx.rotate(
+            startAngle + anglePerItem/2
+        );
+
+        ctx.fillStyle = "white";
+        ctx.font = "bold 16px Arial";
+        ctx.textAlign = "right";
+
+        ctx.fillText(
+            item,
+            radius - 15,
+            8
+        );
+
+        ctx.restore();
+
+    });
+
+}
+
+/* =====================================================
+   GIRAR RULETA
+===================================================== */
+
+function spinWheel(items, ctx, callback){
+
+    if(items.length === 0){
+        return;
+    }
+
+    let rotation = 0;
+
+    const spinDuration = 5000;
+
+    const finalRotation =
+        (Math.PI * 12) +
+        (Math.random() * Math.PI * 2);
+
+    const start = performance.now();
+
+    function animate(now){
+
+        const elapsed = now - start;
+
+        const progress =
+            Math.min(elapsed / spinDuration, 1);
+
+        const easeOut =
+            1 - Math.pow(1 - progress, 4);
+
+        rotation = finalRotation * easeOut;
+
+        drawWheel(ctx, items, rotation);
+
+        if(progress < 1){
+
+            requestAnimationFrame(animate);
+
+        }else{
+
+            const anglePerItem =
+                (Math.PI * 2) / items.length;
+
+            const correctedRotation =
+                rotation % (Math.PI * 2);
+
+            /*
+                Flecha ubicada arriba
+            */
+
+            const pointerAngle =
+                Math.PI * 1.5;
+
+            let selectedIndex =
+                Math.floor(
+                    (
+                        (
+                            pointerAngle -
+                            correctedRotation +
+                            Math.PI * 2
+                        ) % (Math.PI * 2)
+                    ) / anglePerItem
+                );
+
+            selectedIndex =
+                selectedIndex % items.length;
+
+            callback(items[selectedIndex]);
+
+        }
+
+    }
+
+    requestAnimationFrame(animate);
+
+}
+
+/* =====================================================
+   HISTORIAL
+===================================================== */
+
+function updateHistory(){
+
+    usedGroupsList.innerHTML = "";
+    usedQuestionsList.innerHTML = "";
+
+    usedGroups.forEach(group=>{
+
+        const li = document.createElement("li");
+
+        li.textContent = group;
+
+        usedGroupsList.appendChild(li);
+
+    });
+
+    usedQuestions.forEach(question=>{
+
+        const li = document.createElement("li");
+
+        li.textContent = question;
+
+        usedQuestionsList.appendChild(li);
+
+    });
+
+}
+
+/* =====================================================
+   PANEL MANUAL
+===================================================== */
+
+function renderGroupButtons(){
+
+    groupButtonsContainer.innerHTML = "";
+
+    groups.forEach(group=>{
+
+        const btn = document.createElement("button");
+
+        btn.classList.add("remove-btn");
+
+        btn.textContent =
+            `Eliminar ${group}`;
+
+        btn.onclick = ()=>{
+
+            groups =
+                groups.filter(g=>g !== group);
+
+            drawWheel(groupCtx, groups);
+
+            renderGroupButtons();
+
+            showMessage(
+                `${group} eliminado manualmente.`
+            );
+
+        };
+
+        groupButtonsContainer.appendChild(btn);
+
+    });
+
+}
+
+/* =====================================================
+   MENSAJES
+===================================================== */
+
+function showMessage(text){
+
+    messageBox.textContent = text;
+
+}
+
+/* =====================================================
+   INICIAR RONDA
+===================================================== */
+
+document
+.getElementById("startRoundBtn")
+.addEventListener("click", ()=>{
+
+    if(groups.length === 0){
+
+        showMessage(
+            "No quedan grupos disponibles."
+        );
+
+        return;
+    }
+
+    if(questions.length === 0){
+
+        showMessage(
+            "No quedan preguntas disponibles."
+        );
+
+        return;
+    }
+
+    currentGroup = null;
+    currentQuestion = null;
+
+    groupResult.textContent = "---";
+
+    questionResult.innerHTML = "---";
+
+    spinQuestionsBtn.disabled = true;
+
+    canSpinQuestions = false;
+
+    showMessage(
+        "La ronda está lista. Gire la ruleta de grupos."
+    );
+
+});
+
+/* =====================================================
+   GIRAR GRUPOS
+===================================================== */
+
+spinGroupsBtn.addEventListener("click", ()=>{
+
+    if(groups.length === 0){
+
+        showMessage(
+            "Todos los grupos ya fueron utilizados."
+        );
+
+        return;
+    }
+
+    spinGroupsBtn.disabled = true;
+
+    showMessage(
+        "Girando ruleta de grupos..."
+    );
+
+    spinWheel(groups, groupCtx, (winner)=>{
+
+        currentGroup = winner;
+
+        groupResult.textContent = winner;
+
+        canSpinQuestions = true;
+
+        spinQuestionsBtn.disabled = false;
+
+        spinGroupsBtn.disabled = false;
+
+        showMessage(
+            `Grupo seleccionado: ${winner}. Ahora gire la ruleta de preguntas.`
+        );
+
+    });
+
+});
+
+/* =====================================================
+   GIRAR PREGUNTAS
+===================================================== */
+
+spinQuestionsBtn.addEventListener("click", ()=>{
+
+    if(!canSpinQuestions){
+
+        showMessage(
+            "Primero debe seleccionar un grupo."
+        );
+
+        return;
+    }
+
+    if(questions.length === 0){
+
+        showMessage(
+            "No quedan preguntas disponibles."
+        );
+
+        return;
+    }
+
+    spinQuestionsBtn.disabled = true;
+
+    showMessage(
+        "Girando ruleta de preguntas..."
+    );
+
+    spinWheel(questions, questionCtx, (winner)=>{
+
+        currentQuestion = winner;
+
+        questionResult.innerHTML = `
+            <div>${winner}</div>
+        `;
+
+        usedGroups.push(currentGroup);
+
+        usedQuestions.push(currentQuestion);
+
+        groups =
+            groups.filter(
+                g=>g !== currentGroup
+            );
+
+        questions =
+            questions.filter(
+                q=>q !== currentQuestion
+            );
+
+        updateHistory();
+
+        renderGroupButtons();
+
+        drawWheel(groupCtx, groups);
+
+        drawWheel(questionCtx, questions);
+
+        canSpinQuestions = false;
+
+        showMessage(
+            `Ronda finalizada: ${currentGroup} responderá "${currentQuestion}".`
+        );
+
+    });
+
+});
+
+/* =====================================================
+   REINICIAR
+===================================================== */
+
+document
+.getElementById("resetBtn")
+.addEventListener("click", ()=>{
+
+    groups = [
+        "Grupo 1",
+        "Grupo 2",
+        "Grupo 3",
+        "Grupo 4",
+        "Grupo 5",
+        "Grupo 6",
+        "Grupo 7",
+        "Grupo 8",
+        "Grupo 9"
+    ];
+
+    questions = [
+        "Pregunta 1",
+        "Pregunta 2",
+        "Pregunta 3",
+        "Pregunta 4",
+        "Pregunta 5",
+        "Pregunta 6",
+        "Pregunta 7",
+        "Pregunta 8",
+        "Pregunta 9",
+        "Pregunta 10",
+        "Pregunta 11",
+        "Pregunta 12"
+    ];
+
+    usedGroups = [];
+    usedQuestions = [];
+
+    currentGroup = null;
+    currentQuestion = null;
+
+    groupResult.textContent = "---";
+
+    questionResult.innerHTML = "---";
+
+    canSpinQuestions = false;
+
+    spinQuestionsBtn.disabled = true;
+
+    updateHistory();
+
+    renderGroupButtons();
+
+    drawWheel(groupCtx, groups);
+
+    drawWheel(questionCtx, questions);
+
+    showMessage(
+        "Juego reiniciado correctamente."
+    );
+
+});
+
+/* =====================================================
+   INICIALIZACIÓN
+===================================================== */
+
+drawWheel(groupCtx, groups);
+
+drawWheel(questionCtx, questions);
+
+renderGroupButtons();
+
+showMessage(
+    "Presione 'Iniciar ronda' para comenzar."
+);
+
+</script>
+
+</body>
+</html>
